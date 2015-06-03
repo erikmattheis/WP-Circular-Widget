@@ -17,6 +17,7 @@ function gsn_circular_widget_enqueue_scripts () {
   if(!is_admin()) {
     wp_register_script("gmodal", "https://rawgit.com/niiknow/gmodal/master/gmodal.min.js", FALSE, "0", TRUE);
     wp_enqueue_script("gmodal");
+    /*
     wp_register_script("angular", "https://oss.maxcdn.com/angularjs/1.2.7/angular.min.js", FALSE, "1.2.7", TRUE);
     wp_enqueue_script("angular");
     wp_register_script("sitecontentscript", "https://clientapix.gsn2.com/api/v1/store/sitecontentscript/75", FALSE, "1.2.7", TRUE);
@@ -27,6 +28,7 @@ function gsn_circular_widget_enqueue_scripts () {
     wp_enqueue_script("storeApp");
     wp_register_script("ctrlCircular", plugins_url("/ctrlCircular.js", __FILE__), FALSE, "1.2.7", TRUE);
     wp_enqueue_script("ctrlCircular");
+    */
   }
 }
 add_action("wp_enqueue_scripts", "gsn_circular_widget_enqueue_scripts");
@@ -91,7 +93,7 @@ class GSN_Circular_Widget extends WP_Widget {
 
         ?>
 
-            <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
     <style type="text/css">
         html, body {
             margin: 0;
@@ -118,7 +120,7 @@ class GSN_Circular_Widget extends WP_Widget {
     
         /* make bootstrap modal scrollable */
         .modal-body {
-            max-height: 200px;
+            /*max-height: 200px;*/
             overflow-y: auto;
         }
         .gmodal-content {
@@ -133,10 +135,9 @@ class GSN_Circular_Widget extends WP_Widget {
     <!-- /For demo purpose -->
 
     <script type="text/javascript">
-            
         function showGSNCircularModal() {
             // you don't need no stinking jquery
-            gmodal.show({content: document.getElementById('gsn-circular-widget-modal-content').innerHTML, hideOn: 'click,esc,tap'});
+            gmodal.show({content: document.getElementById('gsn-circular-widget-modal-content').innerHTML, hideOn: 'esc'});
         }
     </script>
 
@@ -157,7 +158,9 @@ class GSN_Circular_Widget extends WP_Widget {
         </div>
 
     <script type="text/html" id="gsn-circular-widget-modal-content">
-         <?php require("modal_content.php"); ?>
+        <div class="myModalContent">
+            <?php require("modal_content.php"); ?>
+        </div>
     </script>
 
         <?php

@@ -1,115 +1,53 @@
 ﻿var storeApp = angular
-    .module('storeApp', ['oc.lazyLoad', 'infinite-scroll', 'ngRoute', 'ngSanitize', 'ngAnimate', 'ngTouch', 'chieffancypants.loadingBar', 'gsn.core', 'ui.bootstrap', 'ui.map', 'ui.keypress', 'ui.event', 'ui.utils', 'facebook', 'angulartics'])
-    .config(['$ocLazyLoadProvider', '$routeProvider', function ($ocLazyLoadProvider, $routeProvider) {
-      // disable theme
-      gsn.config.SiteTheme = 'bootstrap';
+    .module('storeApp', ['infinite-scroll', 'ngRoute', 'ngSanitize', 'ngAnimate', 'ngTouch', 'chieffancypants.loadingBar', 'gsn.core', 'ui.bootstrap', 'ui.map', 'ui.keypress', 'ui.event', 'ui.utils', 'facebook', 'angulartics'])
+    .config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
+      // disable theme, views has been fork from bootstrap theme
+      gsn.config.SiteTheme = null;  // 'bootstrap' to use bootstrap theme
       gsn.config.defaultMobileListView = false;
-      function getUrl(relativePath){
-        return 'http://cdn-staging.gsngrocers.com/script/gsncore/latest/' + relativePath.replace(/^\/+/gi, '');
-      }
+
+      // though we recommend that you should 'bootstrap' theme because any bugfix would be automatically apply
+      // otherwise, you handle your own bugfixes in your fork theme
+      
+      // force not to use proxy, comment out the line before for IE8 and 9 support
+      gsn.applyConfig(gsn.config, true);
+      $locationProvider.html5Mode(false).hashPrefix('!');
+
       var urls = [
         { login: 0, store: 0, path: '/', tpl: gsn.getContentUrl('/views/home.html') }
-        , { login: 0, store: 0, path: '/article', tpl: gsn.getThemeUrl('/views/engine/article.html'),
-          files: [getUrl('/src/directives/ctrlArticle.js')] 
-        }
-        , { login: 0, store: 0, path: '/article/:id', tpl: gsn.getThemeUrl('/views/engine/article.html'),
-          files: [getUrl('/src/directives/ctrlArticle.js')] 
-         }
-        , { login: 0, store: 1, path: '/circular', tpl: gsn.getThemeUrl('/views/engine/circular-view.html'),
-          files: [
-          'https://cdnjs.cloudflare.com/ajax/libs/photoswipe/3.0.5/klass.min.js',
-          'https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.3.0/handlebars.min.js',
-          'https://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.min.css',
-          'https://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/jquery.qtip.min.js',
-          'https://cdnjs.cloudflare.com/ajax/libs/photoswipe/3.0.5/code.photoswipe.jquery.min.js',
-          getUrl('/vendor/jquery.digitalcirc.js'),
-          getUrl('/src/directives/ctrlCircular.js')
-         ] 
-        }
-        , { login: 0, store: 1, path: '/circular/:viewtype', tpl: gsn.getThemeUrl('/views/engine/circular-view.html'),
-          files: [getUrl('/src/directives/ctrlCircular.js')] 
-         }
+        , { login: 0, store: 0, path: '/article', tpl: gsn.getThemeUrl('/views/engine/article.html') }
+        , { login: 0, store: 0, path: '/article/:id', tpl: gsn.getThemeUrl('/views/engine/article.html') }
+        , { login: 0, store: 1, path: '/circular', tpl: gsn.getThemeUrl('/views/engine/circular-view.html')}
+        , { login: 0, store: 1, path: '/circular/:viewtype', tpl: gsn.getThemeUrl('/views/engine/circular-view.html') }
         , { login: 0, store: 0, path: '/contactus', tpl: gsn.getThemeUrl('/views/engine/contact-us.html') }
-        , { login: 0, store: 1, path: '/coupons/digital', tpl: gsn.getThemeUrl('/views/engine/coupons-view.html'),
-          files: [getUrl('/src/directives/ctrlCouponClassic.js'), getUrl('/src/services/gsnProLogicRewardCard.js')] 
-         }
-        , { login: 0, store: 1, path: '/coupons/printable', tpl: gsn.getThemeUrl('/views/engine/coupons-view.html'),
-          files: [getUrl('/src/directives/ctrlCouponClassic.js'), getUrl('/src/services/gsnProLogicRewardCard.js')] 
-         }
-        , { login: 0, store: 1, path: '/coupons/store', tpl: gsn.getThemeUrl('/views/engine/coupons-view.html'),
-          files: [getUrl('/src/directives/ctrlCouponClassic.js'), getUrl('/src/services/gsnProLogicRewardCard.js')] 
-         }
-        , { login: 0, store: 0, path: '/mealplannerfull', tpl: gsn.getThemeUrl('/views/engine/meal-planner.html'),
-          files: [getUrl('/src/directives/ctrlMealPlanner.js')] 
-         }
+        , { login: 0, store: 1, path: '/coupons/digital', tpl: gsn.getThemeUrl('/views/engine/coupons-view.html') }
+        , { login: 0, store: 1, path: '/coupons/printable', tpl: gsn.getThemeUrl('/views/engine/coupons-view.html') }
+        , { login: 0, store: 1, path: '/coupons/store', tpl: gsn.getThemeUrl('/views/engine/coupons-view.html') }
+        , { login: 0, store: 0, path: '/mealplannerfull', tpl: gsn.getThemeUrl('/views/engine/meal-planner.html') }
         , { login: 1, store: 0, path: '/savedlists', tpl: gsn.getThemeUrl('/views/engine/saved-lists.html') }
         , { login: 0, store: 0, path: '/mylist', tpl: gsn.getThemeUrl('/views/engine/shopping-list.html') }
         , { login: 0, store: 0, path: '/mylist/print', tpl: gsn.getThemeUrl('/views/engine/shopping-list-print.html') }
-        , { login: 0, store: 0, path: '/mylist/email', tpl: gsn.getThemeUrl('/views/engine/shopping-list-email.html'),
-           files: [getUrl('/src/directives/ctrlEmail.js')] 
-          }
-        , { login: 1, store: 0, path: '/myrecipes', tpl: gsn.getThemeUrl('/views/engine/my-recipes.html'),
-           files: [getUrl('/src/directives/ctrlMyRecipes.js')] 
-          }
+        , { login: 0, store: 0, path: '/mylist/email', tpl: gsn.getThemeUrl('/views/engine/shopping-list-email.html') }
+        , { login: 1, store: 0, path: '/myrecipes', tpl: gsn.getThemeUrl('/views/engine/my-recipes.html') }
         , { login: 1, store: 0, path: '/profile', tpl: gsn.getThemeUrl('/views/engine/profile.html') }
-        , { login: 0, store: 0, path: '/recipe/search', tpl: gsn.getThemeUrl('/views/engine/recipe-search.html'),
-          files: [getUrl('/src/directives/ctrlRecipeSearch.js')] 
-          }
-        , { login: 0, store: 0, path: '/recipe', tpl: gsn.getThemeUrl('/views/engine/recipe-details.html'),
-          files: [getUrl('/src/directives/ctrlRecipe.js')] 
-          }
-        , { login: 0, store: 0, path: '/recipe/:id', tpl: gsn.getThemeUrl('/views/engine/recipe-details.html'),
-          files: [getUrl('/src/directives/ctrlRecipe.js')] 
-          }
-        , { login: 0, store: 0, path: '/recipecenter', tpl: gsn.getThemeUrl('/views/engine/recipe-center.html'),
-          files: [getUrl('/src/directives/ctrlRecipeCenter.js')] 
-          }
-        , { login: 0, store: 0, path: '/recipevideo', tpl: gsn.getThemeUrl('/views/engine/recipe-video.html'),
-          files: [
-           getUrl('/vendor/flowplayer-3.2.13.min.js'),
-           getUrl('/src/directives/ctrlRecipeVideo.js')] 
-          }
-        , { login: 0, store: 0, path: '/recipevideo/:id', tpl: gsn.getThemeUrl('/views/engine/recipe-video.html'),
-          files: [
-           getUrl('/vendor/flowplayer-3.2.13.min.js'),
-           getUrl('/src/directives/ctrlRecipeVideo.js')] 
-          }
-        , { login: 0, store: 0, path: '/registration', tpl: gsn.getThemeUrl('/views/engine/registration.html'),
-           files: [getUrl('/src/directives/ctrlRegistration.js')] 
-          }
+        , { login: 0, store: 0, path: '/recipe/search', tpl: gsn.getThemeUrl('/views/engine/recipe-search.html') }
+        , { login: 0, store: 0, path: '/recipe', tpl: gsn.getThemeUrl('/views/engine/recipe-details.html') }
+        , { login: 0, store: 0, path: '/recipe/:id', tpl: gsn.getThemeUrl('/views/engine/recipe-details.html') }
+        , { login: 0, store: 0, path: '/recipecenter', tpl: gsn.getThemeUrl('/views/engine/recipe-center.html') }
+        , { login: 0, store: 0, path: '/recipevideo', tpl: gsn.getThemeUrl('/views/engine/recipe-video.html') }
+        , { login: 0, store: 0, path: '/recipevideo/:id', tpl: gsn.getThemeUrl('/views/engine/recipe-video.html') }
+        , { login: 0, store: 0, path: '/registration', tpl: gsn.getThemeUrl('/views/engine/registration.html') }
         , { login: 0, store: 0, path: '/signin', tpl: gsn.getThemeUrl('/views/engine/signin.html') }
-        , { login: 0, store: 0, path: '/storelocator', tpl: gsn.getThemeUrl('/views/engine/store-locator.html'),
-           files: [getUrl('/src/directives/ctrlStoreLocator.js')] 
-          }
+        , { login: 0, store: 0, path: '/storelocator', tpl: gsn.getThemeUrl('/views/engine/store-locator.html') }
+        , { login: 0, store: 0, path: '/unsubscribe', tpl: gsn.getThemeUrl('/views/engine/unsubscribe.html') }
+        , { login: 0, store: 0, path: '/blog', tpl: gsn.getContentUrl('/views/blog.html') }
       ];
 
-      $ocLazyLoadProvider.config({
-        debug: false,
-        events: false
-      });
-
       angular.forEach(urls, function(v, k){
-        $routeProvider.when(v.path, { templateUrl: v.tpl, caseInsensitiveMatch: true, storeRequired: v.store, requireLogin: v.login,
-          resolve: {
-            lazy: ['$ocLazyLoad', function($ocLazyLoad) {
-              return $ocLazyLoad.load({
-                files: v.files
-              });
-            }]
-          } 
-        })
+        $routeProvider.when(v.path, { templateUrl: v.tpl, caseInsensitiveMatch: true, storeRequired: v.store, requireLogin: v.login })
       });
-
-      $routeProvider.otherwise({ templateUrl: gsn.getThemeUrl('/views/engine/static-content.html'), caseInsensitiveMatch: true });
+      $routeProvider.otherwise({ templateUrl: gsn.getThemeUrl('/views/engine/circular-view.html'), caseInsensitiveMatch: true} );
     }]);
 
-storeApp.filter('replaceWith', function() {
-  return function(input, regex, flag, replaceWith) {
-    var patt = new RegExp(regex, flag);      
-      
-    return input.replace(patt, replaceWith);
-  };
-})
 
 // ContactUsCtrl
 storeApp
