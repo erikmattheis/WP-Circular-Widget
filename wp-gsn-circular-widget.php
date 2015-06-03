@@ -15,14 +15,21 @@ defined( 'ABSPATH' ) or die( 'Sorry, nothing to see here!' );
 /* Header modifications */
 function gsn_circular_widget_enqueue_scripts () {
   if(!is_admin()) {
-    wp_register_script("gmodal", ("https://rawgit.com/niiknow/gmodal/master/gmodal.min.js"), FALSE, "0", TRUE);
+    wp_register_script("gmodal", "https://rawgit.com/niiknow/gmodal/master/gmodal.min.js", FALSE, "0", TRUE);
     wp_enqueue_script("gmodal");
+    wp_register_script("angular", "https://oss.maxcdn.com/angularjs/1.2.7/angular.min.js", FALSE, "1.2.7", TRUE);
+    wp_enqueue_script("angular");
+    wp_register_script("sitecontentscript", "https://clientapix.gsn2.com/api/v1/store/sitecontentscript/75", FALSE, "1.2.7", TRUE);
+    wp_enqueue_script("sitecontentscript");
+    wp_register_script("gsncore", "http://cdn.gsngrocers.com/script/gsncore/1.4.15/gsncore.js", FALSE, "1.2.7", TRUE);
+    wp_enqueue_script("gsncore");
+    wp_register_script("storeApp", plugins_url("/storeApp.js", __FILE__), FALSE, "1.2.7", TRUE);
+    wp_enqueue_script("storeApp");
+    wp_register_script("ctrlCircular", plugins_url("/ctrlCircular.js", __FILE__), FALSE, "1.2.7", TRUE);
+    wp_enqueue_script("ctrlCircular");
   }
 }
 add_action("wp_enqueue_scripts", "gsn_circular_widget_enqueue_scripts");
-
-
-
 
 /* Admin modifications */
 function gsn_circular_widget_menu() {
@@ -125,7 +132,6 @@ class GSN_Circular_Widget extends WP_Widget {
     </style>
     <!-- /For demo purpose -->
 
-    <script type="text/javascript" src="../gmodal.js"></script>
     <script type="text/javascript">
             
         function showGSNCircularModal() {
@@ -151,21 +157,7 @@ class GSN_Circular_Widget extends WP_Widget {
         </div>
 
     <script type="text/html" id="gsn-circular-widget-modal-content">
-         <div class="myModalContent">
-            <h1>HTML Ipsum Presents</h1>
-    
-            <p><strong>Pellentesque habitant morbi tristique</strong> senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. <em>Aenean ultricies mi vitae est.</em> Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, <code>commodo vitae</code>, ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui. <a href="#">Donec non enim</a> in turpis pulvinar facilisis. Ut felis.</p>
-    
-            <h2>Header Level 2</h2>
-    
-            <ol>
-                <li>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</li>
-                <li>Aliquam tincidunt mauris eu risus.</li>
-            </ol>
-    
-            
-            <button class="myCloseButton gmodal-close" title="Close">&times;</button>
-        </div>
+         <?php require("modal_content.php"); ?>
     </script>
 
         <?php
