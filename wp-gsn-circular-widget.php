@@ -15,12 +15,14 @@ defined( 'ABSPATH' ) or die( 'Sorry, nothing to see here!' );
 /* Header modifications */
 function gsn_circular_widget_enqueue_scripts () {
   if(!is_admin()) {
-    wp_deregister_script("jquery");
-    wp_register_script("jquery", ("https://code.jquery.com/jquery-2.1.0.min.js"), FALSE, "2.1.0", TRUE);
-    wp_enqueue_script("jquery");
+    wp_register_script("gmodal", ("https://rawgit.com/niiknow/gmodal/master/gmodal.min.js"), FALSE, "0", TRUE);
+    wp_enqueue_script("gmodal");
   }
 }
 add_action("wp_enqueue_scripts", "gsn_circular_widget_enqueue_scripts");
+
+
+
 
 /* Admin modifications */
 function gsn_circular_widget_menu() {
@@ -42,6 +44,7 @@ function gsn_circular_widget_register_mysettings() {
 function gsn_circular_widget_settings_page() {
 
 ?>
+
     <div class="wrap">
     <h2>GSN Circular Widget Options</h2>
 
@@ -81,6 +84,56 @@ class GSN_Circular_Widget extends WP_Widget {
 
         ?>
 
+            <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <style type="text/css">
+        html, body {
+            margin: 0;
+            padding: 10px;
+        }
+    
+        .gmodal {
+            /* cross-browser IE8 and up compatible data URI RGBA(0,0,0,0.7) */
+            background: url("data:image/gif;base64, iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNg2AQAALUAs0e+XlcAAAAASUVORK5CYII=");
+        }
+    
+        .myModalContent {
+            position: relative;
+            background: #fff;
+            width: 500px;
+            padding: 10px;
+        }
+    
+        .myCloseButton {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+        }
+    
+        /* make bootstrap modal scrollable */
+        .modal-body {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .gmodal-content {
+            opacity: 0;
+            -webkit-transition: opacity 1s linear;
+            transition: opacity 1s linear;
+        }
+        .gmodal-content.in {
+            opacity: 1;
+        }
+    </style>
+    <!-- /For demo purpose -->
+
+    <script type="text/javascript" src="../gmodal.js"></script>
+    <script type="text/javascript">
+            
+        function showGSNCircularModal() {
+            // you don't need no stinking jquery
+            gmodal.show({content: document.getElementById('gsn-circular-widget-modal-content').innerHTML, hideOn: 'click,esc,tap'});
+        }
+    </script>
+
         <div>
             
         <?php
@@ -93,7 +146,27 @@ class GSN_Circular_Widget extends WP_Widget {
 
         ?>
 
+        <button onclick="showGSNCircularModal()">View Circular</button>
+
         </div>
+
+    <script type="text/html" id="gsn-circular-widget-modal-content">
+         <div class="myModalContent">
+            <h1>HTML Ipsum Presents</h1>
+    
+            <p><strong>Pellentesque habitant morbi tristique</strong> senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. <em>Aenean ultricies mi vitae est.</em> Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, <code>commodo vitae</code>, ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui. <a href="#">Donec non enim</a> in turpis pulvinar facilisis. Ut felis.</p>
+    
+            <h2>Header Level 2</h2>
+    
+            <ol>
+                <li>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</li>
+                <li>Aliquam tincidunt mauris eu risus.</li>
+            </ol>
+    
+            
+            <button class="myCloseButton gmodal-close" title="Close">&times;</button>
+        </div>
+    </script>
 
         <?php
         echo $args["after_widget"];
