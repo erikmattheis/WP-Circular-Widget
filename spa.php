@@ -1,25 +1,16 @@
 <?php /*  */ ?>
-
+<div data-ng-app="storeApp">
 <div data-bs-display-mode="bsDisplayMode"><!-- do not hide this div, it is use to detect display size --></div> 
-  <!-- 
-  <link href="http://cdn-staging.gsngrocers.com/script/lib/twitter-bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet" type="text/css"> 
-  <link href="http://cdn-staging.gsngrocers.com/asset/common/styles/global.css" rel="stylesheet" type="text/css">    
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-
-  Your custom css goes below here 
-  <link href="http://cdn-staging.gsngrocers.com/asset/129/styles/app.css?nocache=1" rel="stylesheet" type="text/css">  -->
-
-  <div class="layout-container" data-ng-app="storeApp">
+  <div class="layout-container">
     <div class="mainContent container" data-ng-view=""></div>
   </div>    
-
   <!-- above the fold scripts 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>-->
 
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.28/angular.min.js"></script>   
-  <script src="https://clientapix.gsn2.com/api/v1/store/sitecontentscript/75?nocache=1"></script>                                                  
-  <script data-gsnid="75" src="http://cdn-staging.gsngrocers.com/script/gsndfp/gsndfp.min.js?nocache=1"></script>
-  <script src="http://cdn-staging.gsngrocers.com/script/gsncore/latest/gsncore.js"></script>
+  <script src="https://clientapix.gsn2.com/api/v1/store/sitecontentscript/<?php echo get_option('gsn_chain_id') ?>?nocache=1"></script>                                                  
+  <script data-gsnid="<?php echo get_option('gsn_chain_id') ?>" src="http://cdn-staging.gsngrocers.com/script/gsndfp/gsndfp.js?nocache=1"></script>
+  <script src="http://cdn-staging.gsngrocers.com/script/gsncore/latest/gsncore.js" class="gsn-noads"></script>
   <?php 
   echo '<script src="' . plugins_url( 'storeApp.js', __FILE__) . '"></script>';
   ?>                     
@@ -51,7 +42,7 @@
   <!--end:analytics-->  
   <script>
     <!-- mobile collapse issue: https://github.com/twbs/bootstrap/issues/12852 -->
-    $(document).ready(function () {
+    jQuery(document).ready(function ($) {
       $(document).on('click.nav','.navbar-collapse.in',function(e) {
         if( $(e.target).is('a') ) {
             $(this).removeClass('in').addClass('collapse');
@@ -59,3 +50,5 @@
       });
     });
   </script>  
+
+</div>
