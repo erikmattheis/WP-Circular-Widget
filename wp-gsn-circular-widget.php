@@ -12,12 +12,29 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 defined( 'ABSPATH' ) or die( 'Sorry, nothing to see here!' );
 
+/* intercept paths we need to use */
+add_action( 'parse_request', 'gsn_circular_widget_load_spa');
+function gsn_circular_widget_load_spa() {
+  if ( preg_match( '/^\/circular(.*)/i', $_SERVER["REQUEST_URI"] ) ) {
+    require( dirname( __FILE__ ) . '/spa.php');
+    die(0);
+  }
+  return;
+}
+
+function print_gsn_circular( $atts ) {
+    require( dirname( __FILE__ ) . '/spa.php');
+}
+
+add_shortcode( 'gsn_circular', 'print_gsn_circular' );
+
 /* Header modifications */
 function gsn_circular_widget_enqueue_scripts () {
   if(!is_admin()) {
+    /*
     wp_register_script("gmodal", "https://rawgit.com/niiknow/gmodal/master/gmodal.min.js", FALSE, "0", TRUE);
     wp_enqueue_script("gmodal");
-    /*
+    
     wp_register_script("angular", "https://oss.maxcdn.com/angularjs/1.2.7/angular.min.js", FALSE, "1.2.7", TRUE);
     wp_enqueue_script("angular");
     wp_register_script("sitecontentscript", "https://clientapix.gsn2.com/api/v1/store/sitecontentscript/75", FALSE, "1.2.7", TRUE);
@@ -46,8 +63,8 @@ function gsn_circular_widget_menu() {
 add_action("admin_menu", "gsn_circular_widget_menu");
 
 function gsn_circular_widget_register_mysettings() {
-  register_setting( 'gsn-circular-widget', 'title' );
-  register_setting( 'gsn-circular-widget', 'chain_id' );
+  register_setting( 'gsn_circular_widget', 'title' );
+  register_setting( 'gsn_circular_widget', 'chain_id' );
 }
 
 function gsn_circular_widget_settings_page() {
@@ -60,8 +77,8 @@ function gsn_circular_widget_settings_page() {
     <form method="post" action="options.php">
 
         <table class="form-table">
-            <?php settings_fields('gsn-circular-widget' ); ?>
-            <?php do_settings_sections('gsn-circular-widget'); ?>
+            <?php settings_fields('gsn_circular_widget' ); ?>
+            <?php do_settings_sections('gsn_circular_widget'); ?>
             <tr valign="top">
             <th scope="row">Chain ID</th>
             <td><input type="text" name="chain_id" value="<?php echo get_option('chain_id'); ?>" /></td>
@@ -83,7 +100,7 @@ class GSN_Circular_Widget extends WP_Widget {
         parent::__construct(
             "gsn_circular_widget", // widget Id
             "GSN Circular Widget", // widget name
-            array( 'description' => "Displays circular in modal window.")
+            array( 'description' => "Displays circular.")
         );
     }
 
@@ -95,10 +112,6 @@ class GSN_Circular_Widget extends WP_Widget {
 
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
     <style type="text/css">
-        html, body {
-            margin: 0;
-            padding: 10px;
-        }
     
         .gmodal {
             /* cross-browser IE8 and up compatible data URI RGBA(0,0,0,0.7) */
@@ -119,6 +132,18 @@ class GSN_Circular_Widget extends WP_Widget {
         }
     
         /* make bootstrap modal scrollable */
+
+        .modal-dialog {
+          width: 100%;
+          height: 100%;
+          padding: 0;
+        }
+
+        .modal-content {
+          height: 100%;
+          border-radius: 0;
+        }
+
         .modal-body {
             /*max-height: 200px;*/
             overflow-y: auto;
@@ -137,7 +162,7 @@ class GSN_Circular_Widget extends WP_Widget {
     <script type="text/javascript">
         function showGSNCircularModal() {
             // you don't need no stinking jquery
-            gmodal.show({content: document.getElementById('gsn-circular-widget-modal-content').innerHTML, hideOn: 'esc'});
+            gmodal.show({content: document.getElementById('gsn-circular-widget-modal-content').innerHTML, hideOn: 'click,esc'});
         }
     </script>
 
@@ -158,8 +183,16 @@ class GSN_Circular_Widget extends WP_Widget {
         </div>
 
     <script type="text/html" id="gsn-circular-widget-modal-content">
-        <div class="myModalContent">
-            <?php require("modal_content.php"); ?>
+        <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close gmodal-close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+              </div>
+              <div class="modal-body">
+                <?php require("modal_content.php"); ?>
+                </div>
+            </div>
         </div>
     </script>
 

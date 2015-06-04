@@ -1,33 +1,36 @@
+<?php /*  */ ?>
 
-  <div data-bs-display-mode="bsDisplayMode"><!-- do not hide this div, it is use to detect display size --></div> 
-  
+<div data-bs-display-mode="bsDisplayMode"><!-- do not hide this div, it is use to detect display size --></div> 
+  <!-- 
   <link href="http://cdn-staging.gsngrocers.com/script/lib/twitter-bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet" type="text/css"> 
   <link href="http://cdn-staging.gsngrocers.com/asset/common/styles/global.css" rel="stylesheet" type="text/css">    
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
-  <!-- Your custom css goes below here -->
-  <link href="http://cdn-staging.gsngrocers.com/asset/129/styles/app.css?nocache=1" rel="stylesheet" type="text/css">  
+  Your custom css goes below here 
+  <link href="http://cdn-staging.gsngrocers.com/asset/129/styles/app.css?nocache=1" rel="stylesheet" type="text/css">  -->
 
   <div class="layout-container" data-ng-app="storeApp">
     <div class="mainContent container" data-ng-view=""></div>
   </div>    
 
-  <!-- above the fold scripts -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <!-- above the fold scripts 
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>-->
+
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.28/angular.min.js"></script>   
-  <script src="https://clientapix.gsn2.com/api/v1/store/sitecontentscript/129?nocache=1"></script>                                                  
-  <script data-gsnid="129" src="http://cdn-staging.gsngrocers.com/script/gsndfp/gsndfp.min.js?nocache=1"></script>
-  <script src="http://cdn-staging.gsngrocers.com/script/gsncore/latest/gsncore.js"></script>  
-  <script src="storeApp.js"></script>      
-                                    
+  <script src="https://clientapix.gsn2.com/api/v1/store/sitecontentscript/75?nocache=1"></script>                                                  
+  <script data-gsnid="75" src="http://cdn-staging.gsngrocers.com/script/gsndfp/gsndfp.min.js?nocache=1"></script>
+  <script src="http://cdn-staging.gsngrocers.com/script/gsncore/latest/gsncore.js"></script>
+  <?php 
+  echo '<script src="' . plugins_url( 'storeApp.js', __FILE__) . '"></script>';
+  ?>                     
   <!-- angular depencencies -->                                             
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.28/angular-sanitize.min.js"></script><!-- security -->   
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.28/angular-route.min.js"></script><!-- routing and history -->  
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.28/angular-animate.min.js"></script><!-- carousel -->
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.28/angular-touch.min.js"></script> <!-- touch polyfill for ng-click -->
 
-  <!-- below the fold: js -->                                                                                 
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script><!-- bootstrap -->    
+  <!-- below the fold: js   -->                                                                            
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script><!-- bootstrap -->   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.min.js"></script><!-- bootstrap to angular bridge --> 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.3.0/handlebars.min.js"></script><!-- for circular imagemap --> 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/3.0.5/klass.min.js"></script><!-- required for photoswipe -->
@@ -55,4 +58,4 @@
         }
       });
     });
-  </script>   
+  </script>  

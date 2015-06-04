@@ -2,7 +2,7 @@
     .module('storeApp', ['infinite-scroll', 'ngRoute', 'ngSanitize', 'ngAnimate', 'ngTouch', 'chieffancypants.loadingBar', 'gsn.core', 'ui.bootstrap', 'ui.map', 'ui.keypress', 'ui.event', 'ui.utils', 'facebook', 'angulartics'])
     .config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
       // disable theme, views has been fork from bootstrap theme
-      gsn.config.SiteTheme = null;  // 'bootstrap' to use bootstrap theme
+      gsn.config.SiteTheme = 'bootstrap';  // 'bootstrap' to use bootstrap theme
       gsn.config.defaultMobileListView = false;
 
       // though we recommend that you should 'bootstrap' theme because any bugfix would be automatically apply
@@ -13,7 +13,7 @@
       $locationProvider.html5Mode(false).hashPrefix('!');
 
       var urls = [
-        { login: 0, store: 0, path: '/', tpl: gsn.getContentUrl('/views/home.html') }
+        { login: 0, store: 0, path: '/', tpl: gsn.getThemeUrl('/views/engine/circular-view.html') }
         , { login: 0, store: 0, path: '/article', tpl: gsn.getThemeUrl('/views/engine/article.html') }
         , { login: 0, store: 0, path: '/article/:id', tpl: gsn.getThemeUrl('/views/engine/article.html') }
         , { login: 0, store: 1, path: '/circular', tpl: gsn.getThemeUrl('/views/engine/circular-view.html')}
