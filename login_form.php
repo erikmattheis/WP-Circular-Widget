@@ -3,6 +3,7 @@
 require_once(dirname( __FILE__ ) . '/scripts.php');
 
 ?>
+
 <div class="hidden-print dropdown pull-right menu-login ng-cloak" data-ng-show="isLoggedIn" style="padding-top: 5px" data-ng-class="{ 'open': gvm.loginMenuActive }">
   <a href="javascript:void(0)" data-ng-click="gvm.loginMenuActive = !gvm.loginMenuActive">
     {{profile.FirstName + ' ' + profile.LastName}} <i class="fa fa-caret-down"></i>
@@ -35,4 +36,3 @@ require_once(dirname( __FILE__ ) . '/scripts.php');
     <a href="javascript:void(0)" class="col-md-6" data-gsn-modal="getThemeUrl('/views/engine/modal-recover-password.html')" data-ng-click="showModal()">password?</a>
   </div>
 </div>
-
