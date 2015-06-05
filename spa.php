@@ -51,7 +51,7 @@
   <!--end:analytics-->  
   <script>
     <!-- mobile collapse issue: https://github.com/twbs/bootstrap/issues/12852 -->
-    $(document).ready(function () {
+    jQuery(document).ready(function ($) {
       $(document).on('click.nav','.navbar-collapse.in',function(e) {
         if( $(e.target).is('a') ) {
             $(this).removeClass('in').addClass('collapse');
