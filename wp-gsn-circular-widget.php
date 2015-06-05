@@ -12,17 +12,30 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 defined( 'ABSPATH' ) or die( 'Sorry, nothing to see here!' );
 
-/* intercept paths we need to use */
-add_action( 'parse_request', 'gsn_circular_widget_load_spa');
-function gsn_circular_widget_load_spa() {
-  if ( preg_match( '/^\/circular(.*)/i', $_SERVER["REQUEST_URI"] ) ) {
-    require( dirname( __FILE__ ) . '/spa.php');
-    die(0);
-  }
-  return;
+/* shortcodes */
+function print_gsn_login() {
+    if (!empty(get_option('gsn_chain_id'))) {
+        require( dirname( __FILE__ ) . '/login_form.php');
+    }
+    else {
+        printMissingChainIdError();
+    }
 }
 
-function print_gsn_circular( $atts ) {
+add_shortcode( 'gsn_login', 'print_gsn_login' );
+
+function print_gsn_shopping_list() {
+    if (!empty(get_option('gsn_chain_id'))) {
+        require( dirname( __FILE__ ) . '/shopping_list.php');
+    }
+    else {
+        printMissingChainIdError();
+    }
+}
+
+add_shortcode('gsn_shopping_list', 'print_gsn_shopping_list');
+
+function print_gsn_circular() {
     require( dirname( __FILE__ ) . '/spa.php');
 }
 
@@ -64,7 +77,7 @@ add_action("admin_menu", "gsn_circular_widget_menu");
 
 function gsn_circular_widget_register_mysettings() {
   register_setting( 'gsn_circular_widget', 'title' );
-  register_setting( 'gsn_circular_widget', 'chain_id' );
+  register_setting( 'gsn_circular_widget', 'gsn_chain_id' );
 }
 
 function gsn_circular_widget_settings_page() {
@@ -81,7 +94,7 @@ function gsn_circular_widget_settings_page() {
             <?php do_settings_sections('gsn_circular_widget'); ?>
             <tr valign="top">
             <th scope="row">Chain ID</th>
-            <td><input type="text" name="chain_id" value="<?php echo get_option('chain_id'); ?>" /></td>
+            <td><input type="text" name="gsn_chain_id" value="<?php echo get_option('gsn_chain_id'); ?>" /></td>
             </tr>
         </table>
         
