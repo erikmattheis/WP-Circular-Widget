@@ -24,28 +24,46 @@ function gsn_circular_widget_load_spa() {
 add_action( 'parse_request', 'gsn_circular_widget_load_spa');
 */
 
+function print_gsn_login() {
+    if (!empty(get_option('gsn_chain_id'))) {
+        require( dirname( __FILE__ ) . '/login_form.php');
+    }
+    else {
+        printMissingChainIdError();
+    }
+}
+
+add_shortcode( 'gsn_login', 'print_gsn_login' );
+
 function print_gsn_circular() {
     if (!empty(get_option('gsn_chain_id'))) {
         require( dirname( __FILE__ ) . '/spa.php');
     }
     else {
-        echo '<div style="background:white; color:red"><p><strong>Please <a href="' . admin_url( 'admin.php?page=wp-gsn-circular-widget%2Fwp-gsn-circular-widget.php') . '"> enter store id</a>.</strong></p></div>';
+        printMissingChainIdError();
     }
 }
 
 add_shortcode( 'gsn_circular', 'print_gsn_circular' );
 
+function printMissingChainIdError() {
+    echo '<div style="background:white; color:red"><p><strong>Please <a href="' . admin_url( 'admin.php?page=wp-gsn-circular-widget%2Fwp-gsn-circular-widget.php') . '"> enter store id</a>.</strong></p></div>';
+}
+
 /* Header modifications */
 function gsn_circular_widget_enqueue_scripts () {
-  if(!is_admin()) {
-    wp_register_script("gsncore", "http://cdn-staging.gsngrocers.com/script/gsncore/latest/gsncore.js", FALSE, "0", TRUE);
+  if(!is_admin()) {/*
+    wp_register_style("bootstrap", "http://cdn-staging.gsngrocers.com/script/lib/twitter-bootstrap/3.3.4/css/bootstrap.min.css", FALSE, "0", TRUE);
+    wp_enqueue_style("bootstrap");
+    wp_register_script("angular", "https://oss.maxcdn.com/angularjs/1.2.7/angular.min.js", FALSE, "1.2.7", FALSE);
+    wp_enqueue_script("angular");
+    wp_register_script("gsncore", "http://cdn-staging.gsngrocers.com/script/gsncore/latest/gsncore.js", array("jquery", "angular"), "angular", FALSE);
     wp_enqueue_script("gsncore");
-      /*
+      
     wp_register_script("gmodal", "https://rawgit.com/niiknow/gmodal/master/gmodal.min.js", FALSE, "0", TRUE);
     wp_enqueue_script("gmodal");
     
-    wp_register_script("angular", "https://oss.maxcdn.com/angularjs/1.2.7/angular.min.js", FALSE, "1.2.7", TRUE);
-    wp_enqueue_script("angular");
+    
     wp_register_script("sitecontentscript", "https://clientapix.gsn2.com/api/v1/store/sitecontentscript/75", FALSE, "1.2.7", TRUE);
     wp_enqueue_script("sitecontentscript");
     wp_register_script("gsncore", "http://cdn.gsngrocers.com/script/gsncore/1.4.15/gsncore.js", FALSE, "1.2.7", TRUE);
