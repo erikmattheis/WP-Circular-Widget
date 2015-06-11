@@ -14,11 +14,10 @@ var storeApp = angular
       
       // force not to use proxy, comment out the line before for IE8 and 9 support
       gsn.applyConfig(gsn.config, true);
-      $locationProvider.html5Mode(false).hashPrefix('!');
+      $locationProvider.html5Mode(true).hashPrefix('!');
 
       var urls = [
-        { login: 0, store: 0, path: '/', tpl: gsn.getThemeUrl('/views/engine/circular-view.html') }
-        , { login: 0, store: 0, path: '/article', tpl: gsn.getThemeUrl('/views/engine/article.html') }
+        { login: 0, store: 0, path: '/article', tpl: gsn.getThemeUrl('/views/engine/article.html') }
         , { login: 0, store: 0, path: '/article/:id', tpl: gsn.getThemeUrl('/views/engine/article.html') }
         , { login: 0, store: 1, path: '/circular', tpl: gsn.getThemeUrl('/views/engine/circular-view.html')}
         , { login: 0, store: 1, path: '/circular/:viewtype', tpl: gsn.getThemeUrl('/views/engine/circular-view.html') }
@@ -43,13 +42,12 @@ var storeApp = angular
         , { login: 0, store: 0, path: '/signin', tpl: gsn.getThemeUrl('/views/engine/signin.html') }
         , { login: 0, store: 0, path: '/storelocator', tpl: gsn.getThemeUrl('/views/engine/store-locator.html') }
         , { login: 0, store: 0, path: '/unsubscribe', tpl: gsn.getThemeUrl('/views/engine/unsubscribe.html') }
-        , { login: 0, store: 0, path: '/blog', tpl: gsn.getContentUrl('/views/blog.html') }
+        , { login: 0, store: 0, path: '/blog', tpl: gsn.getThemeUrl('/views/blog.html') }
       ];
 
       angular.forEach(urls, function(v, k){
         $routeProvider.when(v.path, { templateUrl: v.tpl, caseInsensitiveMatch: true, storeRequired: v.store, requireLogin: v.login })
       });
-      $routeProvider.otherwise({ templateUrl: gsn.getThemeUrl('/views/engine/circular-view.html'), caseInsensitiveMatch: true} );
     }]);
 
 
