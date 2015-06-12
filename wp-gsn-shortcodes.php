@@ -61,12 +61,10 @@ function gsn_shortcodes_is_unconfigured() {
 	if ($_GET["page"] === "gsn_shortcodes") {
 		return;
 	}
-
 	global $pages_to_create;
 	$configured = true;
 
 	foreach($pages_to_create as $page_to_create) {
-		dumpError($page_to_create["path"]);
         if (!path_exists($page_to_create["path"])) {
             $configured = false;
             break;
@@ -173,12 +171,7 @@ function check_for_path_conflicts() {
 
 add_action('admin_init', 'check_for_path_conflicts' );
 
-function dumpError($error) {
-	    echo "<div class='error'>";
-    	var_dump($error);
-    	echo "</div>";
 
-}
 function assemble_path_conflict_html($path) {
 
     $edit_post_link = "";
@@ -235,7 +228,7 @@ function string_contains_gsn_shortcode($str) {
     return false;
 }
 
-/*
+
 function get_parent_post_id($path) {
 
     if (substr($path, 0, 1) !== "/") {
@@ -243,7 +236,6 @@ function get_parent_post_id($path) {
         return false;
     }
 
-    $parent_post_id = 0;
     $parent = explode("/", untrailingslashit($path));
 
     if (count($parent) > 3) {
@@ -252,12 +244,13 @@ function get_parent_post_id($path) {
     }
 
     if (count($parent) === 3) {
-        $parent_page = get_page_or_post_by_path("/" . $parent[2]);
+        $parent_page = get_page_or_post_by_path("/" . $parent[1]);
+        return $parent_page->ID;
     }
 
-    return $parent_post_id;
+    return 0;
 }
-*/
+
 function create_path_pages($pages_to_create) {
 	
     $links_to_created_pages_html = "";
@@ -268,9 +261,12 @@ function create_path_pages($pages_to_create) {
             $page['post_author'] = get_current_user_id();
             $page['post_status'] = 'publish';
             $page['post_type'] = 'page';
-            $page['post_parent'] = 0; //get_parent_post_id($page_to_create["path"]);
+            $page['post_parent'] = get_parent_post_id($page_to_create["path"]);
+            if (!is_int( $page['post_parent'])) {
+            	die("Unexpected error when determinimg post parent.");
+            }
             $page['post_title'] = $page_to_create["title"];
-            $page['post_name'] = $page_to_create["path"];
+            $page['post_name'] =  end(array_values(explode("/", $page_to_create["path"])));;
 
             $page_id = wp_insert_post($page);
             if ($pageid === 0) {
@@ -297,6 +293,7 @@ function create_path_pages($pages_to_create) {
      else {
         echo '<div class="updated">'
             . '<p>All pages and shortcodes have validated.</p>'
+            . '<p><span style="color:red" class="dashicons dashicons-flag"></span> You might have pages in the trash that have not been validated.</p>'
             . '</div>';
      }
      
@@ -309,19 +306,113 @@ $pages_to_create = array(
     ),
     array(
         "path" => "/article/featured",
-        "title" => "Articles",
+        "title" => "Featured Article",
     ),
     array(
         "path" => "/circular",
         "title" => "Circular",
     ),
-    array(
-        "path" => "/not",
-        "title" => "Not",
-    ),
+    /* does not work */
     array(
         "path" => "/contactus",
         "title" => "Contact Us",
     ),
+    array(
+        "path" => "/coupons",
+        "title" => "Coupons",
+    ),
+    array(
+        "path" => "/coupons/digital",
+        "title" => "Digital Coupons",
+    ),
+    array(
+        "path" => "/coupons/printable",
+        "title" => "Printable Coupons",
+    ),
+    array(
+        "path" => "/coupons/store",
+        "title" => "Store Coupons",
+    ),
+    array(
+        "path" => "/mealplannerfull",
+        "title" => "Meal Planner",
+    ),
+    array(
+        "path" => "/savedlists",
+        "title" => "Saved Lists",
+    ),
+    array(
+        "path" => "/mylist",
+        "title" => "Shopping List",
+    ),
+    array(
+        "path" => "/mylist/print",
+        "title" => "Shopping List - Print",
+    ),
+    array(
+        "path" => "/mylist/email",
+        "title" => "Shopping List - Email",
+    ),
+    array(
+        "path" => "/myrecipes",
+        "title" => "My Recipes",
+    ),
+    array(
+        "path" => "/profile",
+        "title" => "Profile",
+    ),
+    array(
+        "path" => "/recipe",
+        "title" => "Recipe",
+    ),
+    array(
+        "path" => "/recipe/search",
+        "title" => "Search Rercipes",
+    ),
+    array(
+        "path" => "/recipecenter",
+        "title" => "Recipe Center",
+    ),
+    array(
+        "path" => "/recipevideo",
+        "title" => "Recipe Video",
+    ),
+    array(
+        "path" => "/registration",
+        "title" => "Registration",
+    ),
+    array(
+        "path" => "/signin",
+        "title" => "Sign In",
+    ),
+    array(
+        "path" => "/storelocator",
+        "title" => "Store Locator",
+    ),
+    array(
+        "path" => "/unsubscribe",
+        "title" => "Unsubscribe",
+    ),
+    array(
+        "path" => "/blog",
+        "title" => "Blog",
+    ),
 );
 
+function dumpError($error) {
+	    echo "<div class='error'>";
+    	var_dump($error);
+    	echo "</div>";
+
+}
+/*
+
+        , { login: 0, store: 0, path: '/article/:id', tpl: gsn.getThemeUrl('/views/engine/article.html') }
+
+        , { login: 0, store: 1, path: '/circular/:viewtype', tpl: gsn.getThemeUrl('/views/engine/circular-view.html') }
+
+
+        , { login: 0, store: 0, path: '/recipevideo/:id', tpl: gsn.getThemeUrl('/views/engine/recipe-video.html') }
+
+
+*/
