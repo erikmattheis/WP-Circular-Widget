@@ -14,7 +14,7 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 /* shortcodes */
 function print_gsn_login() {
     if (!empty(get_option('gsn_chain_id'))) {
-        require( dirname( __FILE__ ) . '/login_form.php');
+        require(dirname( __FILE__ ) . '/html/login_form.php');
     }
     else {
         printMissingChainIdError();
@@ -25,7 +25,7 @@ add_shortcode( 'gsn_login', 'print_gsn_login' );
 
 function print_gsn_shopping_list() {
     if (!empty(get_option('gsn_chain_id'))) {
-        require( dirname( __FILE__ ) . '/shopping_list.php');
+        require(dirname( __FILE__ ) . '/html/shopping_list.php');
     }
     else {
         printMissingChainIdError();
@@ -35,7 +35,7 @@ function print_gsn_shopping_list() {
 add_shortcode('gsn_shopping_list', 'print_gsn_shopping_list');
 
 function print_gsn_circular() {
-    require( dirname( __FILE__ ) . '/spa.php');
+    require(dirname( __FILE__ ) . '/html/spa.php');
 }
 
 add_shortcode( 'gsn_spa', 'print_gsn_circular' );
@@ -45,7 +45,7 @@ function printMissingChainIdError() {
     . '<p>'
     . '<strong>'
     . 'Please <a href="'
-    . admin_url( 'options-general.php?page=gsn_circular_shortcodes')
+    . admin_url( 'options-general.php?page=gsn_shortcodes')
     . '">'
     . ' enter store id'
     . '</a>'
@@ -58,10 +58,15 @@ function printMissingChainIdError() {
 
 function gsn_shortcodes_is_unconfigured() {
 
-	global $pages_to_create;
+	if ($_GET["page"] === "gsn_shortcodes") {
+		return;
+	}
 
+	global $pages_to_create;
 	$configured = true;
+
 	foreach($pages_to_create as $page_to_create) {
+		dumpError($page_to_create["path"]);
         if (!path_exists($page_to_create["path"])) {
             $configured = false;
             break;
@@ -70,20 +75,24 @@ function gsn_shortcodes_is_unconfigured() {
 
 	if ($configured) {
 		foreach($pages_to_create as $page_to_create) {
-	        if (!path_exists($page_to_create["path"])) {
-	            $configured = false;
-	            break;
-	        }
-    	}
+	        $page = get_page_or_post_by_path($page_to_create["path"]);
+        	if (isset($page->post_content)
+        		&& !string_contains_gsn_shortcode($page->post_content)) {
+            	$configured = false;
+           	}
+      	}
 	}
-    echo '<div class="error">'
-	    . '<p>'
-	    . 'You have not yet configuired the GSN Shortcodes Plugin. To set up the plugin, go to the '
-	    . '<a class="button button-primary" style="margin:0.25em 1em" href="'
-	    . admin_url( 'options-general.php?page=gsn_shortcodes')
-	    . '">settings page</a>'
-	    . '</p>'
-	    . '</div>';
+
+	if (!$configured) {
+	    echo '<div class="error">'
+		    . '<p>'
+		    . 'You have not yet configured the GSN Shortcodes Plugin. To set up the plugin, go to the '
+		    . '<a class="button button-primary" style="margin:0.25em 1em" href="'
+		    . admin_url( 'options-general.php?page=gsn_shortcodes')
+		    . '">settings page</a>'
+		    . '</p>'
+		    . '</div>';
+	}
 }
 
 add_action("admin_notices", "gsn_shortcodes_is_unconfigured");
@@ -99,7 +108,7 @@ function gsn_shortcodes_settings_link() {
 		"gsn_shortcodes",
 		"gsn_shortcodes_settings_page"
 	);
-	add_action('admin_init', 'gsn_shortcodes_register_settings' );
+	add_action('admin_init', 'gsn_shortcodes_register_settings');
 }
 
 add_action("admin_menu", "gsn_shortcodes_settings_link");
@@ -130,7 +139,7 @@ function gsn_shortcodes_settings_page() {
 /* create pages with pre-inserted shortcodes */
 
 function path_exists($path) {
-    return !empty(get_page_by_path($path)) || url_to_postid($path);
+    return !empty(get_page_or_post_by_path($path)) || url_to_postid($path);
 }
 
 function check_for_path_conflicts() {
@@ -149,7 +158,7 @@ function check_for_path_conflicts() {
         echo '<div class="error">'
         . '<p>'
         . '<strong>'
-        . 'The following pages use paths that will conflict with GSN Shortcodes. Please rename the paths or manually add the [gsn_spa] shortcode before continuing.'
+        . 'The following pages use paths that will conflict with GSN Shortcodes. Please rename the paths or manually add the [gsn_spa] shortcode to the content before continuing.'
         . '</strong>'
         . '<ul>'
         . $path_conflict_string
@@ -157,51 +166,50 @@ function check_for_path_conflicts() {
         . '</p>'
         . '</div>';
     }
-    else {
+    else if ($_GET["page"] === "gsn_shortcodes") {
         create_path_pages($pages_to_create);
     }
 }
 
 add_action('admin_init', 'check_for_path_conflicts' );
 
+function dumpError($error) {
+	    echo "<div class='error'>";
+    	var_dump($error);
+    	echo "</div>";
 
+}
 function assemble_path_conflict_html($path) {
 
     $edit_post_link = "";
     $title = "";
 
-    $page = get_page_attributes_by_path($path);
-    
-	$title = $page->post_title;
-	$edit_post_link = get_edit_post_link($page);
+    $page = get_page_or_post_by_path($path);
+	
+    if (!isset($page->post_content)
+    	|| string_contains_gsn_shortcode($page->post_content)) {
+        return "";
+    }
 
 	$title = $page->post_title;
 	$edit_post_link = get_edit_post_link($page->id);
 
-
-    if (string_contains_gsn_shortcode($page->post_content)) {
-        return "";
-    }
-
-    if (!empty($edit_post_link)) {
-        $edit_post_link = '<li><a href="'
-            . $edit_post_link
-            . '">'
-            . $title
-            . '</a></li>';
-    }
+    $edit_post_link = '<li><a href="'
+        . $edit_post_link
+        . '">'
+        . $title
+        . '</a></li>';
 
     return $edit_post_link;
 
 }
 
-function get_page_attributes_by_path($path) {
+function get_page_or_post_by_path($path) {
 
-	$page = new stdClass();
+	$page = null;
 
 	if (!empty(get_page_by_path($path))) {
         $page = get_page_by_path($path);
-
     }
     else if (url_to_postid($path)) {
         $post_id = url_to_postid($path);
@@ -244,7 +252,7 @@ function get_parent_post_id($path) {
     }
 
     if (count($parent) === 3) {
-        $parent_page = get_page_by_path("/" . $parent[2]);
+        $parent_page = get_page_or_post_by_path("/" . $parent[2]);
     }
 
     return $parent_post_id;
@@ -286,6 +294,11 @@ function create_path_pages($pages_to_create) {
             . '</ul>'
             . '</div>';
      }
+     else {
+        echo '<div class="updated">'
+            . '<p>All pages and shortcodes have validated.</p>'
+            . '</div>';
+     }
      
 }
 
@@ -295,8 +308,16 @@ $pages_to_create = array(
         "title" => "Articles",
     ),
     array(
+        "path" => "/article/featured",
+        "title" => "Articles",
+    ),
+    array(
         "path" => "/circular",
         "title" => "Circular",
+    ),
+    array(
+        "path" => "/not",
+        "title" => "Not",
     ),
     array(
         "path" => "/contactus",

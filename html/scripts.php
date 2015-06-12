@@ -10,7 +10,7 @@
   <script data-gsnid="<?php echo get_option('gsn_chain_id'); ?>" src="http://cdn-staging.gsngrocers.com/script/gsndfp/gsndfp.min.js?nocache=1"></script>
   <script src="http://cdn-staging.gsngrocers.com/script/gsncore/latest/gsncore.js"></script>
   <?php 
-  echo '<script src="' . plugins_url( 'storeApp.js', __FILE__) . '"></script>';
+  echo '<script src="' . plugins_url( '/wp-gsn-shortcodes/html/storeApp.js') . '"></script>';
   ?>                     
   <!-- angular depencencies -->                                             
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.28/angular-sanitize.min.js"></script><!-- security -->   
