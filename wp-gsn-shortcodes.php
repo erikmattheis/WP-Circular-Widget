@@ -13,7 +13,8 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 /* shortcodes */
 function print_gsn_login() {
-    if (!empty(get_option('gsn_chain_id'))) {
+    $chain_id = get_option('gsn_chain_id');
+    if (!empty($chain_id)) {
         require(dirname( __FILE__ ) . '/html/login_form.php');
     }
     else {
@@ -24,7 +25,8 @@ function print_gsn_login() {
 add_shortcode( 'gsn_login', 'print_gsn_login' );
 
 function print_gsn_shopping_list() {
-    if (!empty(get_option('gsn_chain_id'))) {
+    $chain_id = get_option('gsn_chain_id');
+    if (!empty($chain_id)) {
         require(dirname( __FILE__ ) . '/html/shopping_list.php');
     }
     else {
@@ -137,7 +139,8 @@ function gsn_shortcodes_settings_page() {
 /* create pages with pre-inserted shortcodes */
 
 function path_exists($path) {
-    return !empty(get_page_or_post_by_path($path)) || url_to_postid($path);
+    $page_or_post = get_page_or_post_by_path($path);
+    return !empty($page_or_post) || url_to_postid($path);
 }
 
 function check_for_path_conflicts() {
@@ -200,8 +203,8 @@ function assemble_path_conflict_html($path) {
 function get_page_or_post_by_path($path) {
 
 	$page = null;
-
-	if (!empty(get_page_by_path($path))) {
+    $page_by_path = get_page_by_path($path);
+	if (!empty($page_by_path)) {
         $page = get_page_by_path($path);
     }
     else if (url_to_postid($path)) {
